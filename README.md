@@ -63,3 +63,6 @@ Examples:
   bolls -p '{"translations":["NKJV","NLT"],"book":62,"chapter"1,"verses":[1,2,3,4,5]}'
 bolls --define BDBT אֹ֑ור
 ```
+## TODO
+* for ```--chapter``` specifically, make only the "text" attributes available when formatting is enabled
+* add a ```--search``` flag using https://bolls.life/api/#Search
