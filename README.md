@@ -1,4 +1,4 @@
-# bolls-api_bash-client
+# Bolls API - Bash client
 A utility for easily accessing the [bolls.life API](https://bolls.life/api/) to get specific portions of the Bible from a Bash terminal or script. Human-readable text is the default, but can be changed to raw JSON for scripting or whatever with the ```-j``` / ```--raw-json``` flag (see Usage section below).
 
 ## Dependencies
