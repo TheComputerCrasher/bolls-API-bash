@@ -66,5 +66,5 @@ bolls --define BDBT אֹ֑ור
 ```
 ## TODO
 * add a ```--search``` / ```-s``` flag using [bolls.life/api/#Search](https://bolls.life/api/#Search)
-* remove the ```pk``` JSON key by default and add a ```--p``` / ```--include-pk``` flag that keeps it
+* remove the ```pk``` JSON key by default and add a ```-i``` / ```--include-pk``` flag that keeps it
 * add a ```-n``` / ```--no-comments``` flag that removes the ```comment``` JSON key
