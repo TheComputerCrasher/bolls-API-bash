@@ -25,17 +25,31 @@ Command flags:
 
   ```-d``` / ```--list-dictionaries``` - List all available Hebrew/Greek dictionaries
 
-  ```-b``` / ```--books``` ```<translation>``` - List all books of a chosen translation
+  ```-b``` / ```--books <translation>``` - List all books of a chosen translation
 
-  ```-c``` / ```--chapter``` ```<translation> <book> <chapter>``` - Get an entire chapter
+  ```-c``` / ```--chapter <translation> <book> <chapter>``` - Get an entire chapter
 
-  ```-v``` / ```--verse``` ```<translation> <book> <chapter> <verse(s)>``` - Get one or multiple verses from the same chapter
+  ```-v``` / ```--verse <translation> <book> <chapter> <verse(s)>``` - Get one or multiple verses from the same chapter
 
-  ```-p``` / ```--parallel``` ```<translations> <book> <chapter> <verse(s)>``` OR ```--parallel <JSON array or file>``` - Compare one or multiple verses from the same chapter across translations (the translations must have the same books, or this will compare different verses)
+  ```-p``` / ```--parallel <translations> <book> <chapter> <verse(s)>``` OR ```--parallel <JSON array or file>``` - Compare one or multiple verses from the same chapter across translations (the translations must have the same books, or this will compare different verses)
 
-  ```-r``` / ```--random``` ```<translation>``` - Get a random verse
+  ```-s``` / ```--search <translation> <search term> [options]``` - Search verses by text
 
-  ```-f``` / ```--define``` ``` <dictionary> <Hebrew/Greek word>``` - Get definitions for a Hebrew or Greek word
+  Search options:
+
+  ```--match-case <true/false>```
+
+  ```--match-whole-word <true/false>```
+
+  ```--book <book name/book number/ot/nt>```
+
+  ```--page <#>```
+
+  ```--page-limit <#>```
+
+  ```-r``` / ```--random <translation>``` - Get a random verse
+
+  ```-f``` / ```--define <dictionary> <Hebrew/Greek word>``` - Get definitions for a Hebrew or Greek word
 
 Notes:
   <book> can be a number or a name (case-insensitive).
@@ -65,5 +79,4 @@ Examples:
   bolls -f BDBT אֹ֑וראֹ֑ור
 ```
 ## TODO
-* Update README with latest changes
 * Maybe translate into Python with ```pycurl``` and ```jq```
