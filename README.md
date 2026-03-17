@@ -15,7 +15,7 @@ I put this under the CC0 (public domain) license since the code was written by A
 ## Usage
 (taken from ```bolls --help```)
 
-Flags:
+Command flags:
 
   ```-h``` / ```--help```
   Show the help page
@@ -45,11 +45,13 @@ Flags:
   ```-f``` / ```--define``` ``` <dictionary> <Hebrew/Greek word>```
   Get definitions for a Hebrew or Greek word
 
-  ```-j``` / ```--raw-json```
-  Use with another flag to disable formatting
-
 Note:
   <book> can be a number or a name (case-insensitive), even in JSON files.
+
+Modifier flags:
+
+  ```-j``` / ```--raw-json```
+  Disable formatting
 
 Examples:
   ```bolls --translations
@@ -65,3 +67,5 @@ bolls --define BDBT אֹ֑ור
 ## TODO
 * for ```--chapter``` specifically, make only the "text" (and optionally "comment" using [bolls.life/get-text](https://bolls.life/get-text/) instead of [bolls.life/get-chapter](https://bolls.life/get-chapter/) with a ```--no-comments``` /```-c``` flag) attributes available when formatting is enabled
 * add a ```--search``` / ```-s``` flag using [bolls.life/api/#Search](https://bolls.life/api/#Search)
+* remove the ```pk``` JSON key by default and add a ```--p``` / ```--include-pk``` flag that keeps it
+* add a ```-n``` / ```--no-comments``` flag that removes the ```comment``` JSON key
