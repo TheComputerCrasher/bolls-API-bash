@@ -1,8 +1,9 @@
 # bolls-API-bash
-A utility for accessing the [bolls.life API](https://bolls.life/api) from a Bash terminal. Human-readable text is the default, but 
+A utility for accessing the [bolls.life API](https://bolls.life/api) from a Bash terminal. Human-readable text is the default, but can be changed to raw JSON with the ```-j``` flag (see Documentation section below).
 
 ## Dependencies
 Required: ```python3```, ```curl```, and internet access.
+
 Optional: ```jq``` (required for pretty-printing and other formatting)
 
 ## Installation
@@ -12,9 +13,10 @@ Download bolls.sh, put it wherever you'd like, and add ```source /path/to/bolls.
 I put this under the CC0 (public domain) license since the code is not mine at all and was written by AI. Only the ideas and a couple small edits are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life))!
 
 ## Documentation
-(taken from ```bolls --help```
+(taken from ```bolls --help```)
 
 Flags:
+
   ```-h``` / ```--help```
   Show the help page
 
