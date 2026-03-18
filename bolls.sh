@@ -11,7 +11,7 @@ bolls() {
     case "$_a" in
       -j|--raw-json) raw_json=1 ;;
       -i|--include-all) include_all=1 ;;
-      -n|--no-comment) no_comment=1 ;;
+      -n|--no-comments) no_comment=1 ;;
       *) _args+=("$_a") ;;
     esac
   done
@@ -426,9 +426,8 @@ Command flags (choose one):
   -f / --define <dictionary> <Hebrew/Greek word>
   Get definitions for a Hebrew or Greek word
 
-  -p / --parallel <translations> <book> <chapter> <verse(s)> OR --parallel <JSON array or file>
-  Compare one or multiple verses from the same chapter across translations
-  (the translations must have the same books, or this will compare different verses)
+  -p / --parallel <translations> <book> <chapter> <verse(s)>
+  Compare verses across translations
 
   -s / --search <translation> <search term> [options]
   Search verses by text
@@ -438,7 +437,7 @@ Command flags (choose one):
 
     --match-whole-word <true/false>
 
-    --book <book name/book number/ot/nt>
+    --book <book/ot/nt>
 
     --page <#>
     
@@ -457,7 +456,7 @@ Modifier flags (choose one or none):
   -i / --include-all
   Include all JSON keys ("pk:", "translation:", "book", etc.) in -v and -c
 
-  -n / --no-comment
+  -n / --no-comments
   Remove commentary from -c
 
 

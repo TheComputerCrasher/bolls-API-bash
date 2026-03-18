@@ -98,7 +98,7 @@ keep_text_only
 def _print_help() -> None:
     print(
         """
-Command flags (choose 1):
+Command flags (choose one):
   -h / --help
   Show this help page
 
@@ -134,11 +134,15 @@ Command flags (choose 1):
 
     --match-whole-word <true/false>
 
-    --book <book name/book number/ot/nt>
+    --book <book/ot/nt>
 
     --page <#>
     
     --page-limit <#>
+
+Notes:
+  <book> can be a number or a name (case-insensitive).
+  <translation> must be the abbreviation, not the full name (case-insensitive).
 
 
 Modifier flags (choose one or none):
@@ -148,7 +152,7 @@ Modifier flags (choose one or none):
   -i / --include-all
   Include all JSON keys ("pk:", "translation:", "book", etc.) in -v and -c
 
-  -n / --no-comment
+  -n / --no-comments
   Remove commentary from -c
 
 
@@ -422,7 +426,7 @@ def main(argv: list[str]) -> int:
             raw_json = True
         elif a in ("-i", "--include-all"):
             include_all = True
-        elif a in ("-n", "--no-comment"):
+        elif a in ("-n", "--no-comments"):
             no_comment = True
         else:
             args.append(a)
