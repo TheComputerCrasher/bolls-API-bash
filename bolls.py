@@ -146,6 +146,7 @@ Notes:
 
 
 Modifier flags (choose one or none):
+
   -j / --raw-json
   Disable formatting
 
@@ -166,7 +167,7 @@ Examples:
   bolls --verse niv Luke 2 '15,16,17'
   bolls -p 'NKJV,NLT' John 1 '1,2,3,4,5'
   bolls --parallel '{"translations":["NKJV","NLT"],"book":62,"chapter"1,"verses":[1,2,3,4,5]}' -j
-  bolls -s YLT haggi --match-case false --match-whole-word true --page-limit 128 --page 1
+  bolls -s YLT haggi --match_case false --match_whole-word true --page-limit 128 --page 1
   bolls --search kjv love --book Genesis
   bolls -f BDBT אֹ֑ור
 

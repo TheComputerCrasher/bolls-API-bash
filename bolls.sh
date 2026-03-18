@@ -400,7 +400,6 @@ PY
   case "$cmd" in
     -h|--help)
       cat <<'USAGE'
-
 Command flags (choose one):
   -h / --help
   Show this help page
@@ -473,7 +472,6 @@ Examples:
   bolls -s YLT haggi --match_case false --match_whole-word true --page-limit 128 --page 1
   bolls --search kjv love --book Genesis
   bolls -f BDBT אֹ֑ור
-
 USAGE
       return 0
       ;;
