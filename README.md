@@ -8,7 +8,7 @@ A utility for easily accessing the [bolls.life API](https://bolls.life/api/) to 
 Download [bolls.py](/bolls.py), put it wherever you'd like, and run ```python3 /path/to/bolls.py``` ```<subcommands>```. I recommend putting this under an alias like ```bolls``` (which is what I use for the example commands).
 
 ## Packaging?
-If you want to package this script for your own OS or pip or whatever, go ahead, but I don't know how to do so. Besides, this is a CLI-only program and pretty much everything supports Python fairly easily, so I recommend the installation method above. 
+If you want to package this script for your own OS or PyPI or whatever, that's great, but I don't know how to do so and it seems too complicated for just a simple script like this. Besides, this is a CLI-only program and pretty much everything supports Python fairly easily, so I recommend the installation method above. 
 
 ## License
 I (TheComputerCrasher) put this under the CC0 (public domain) license since the code was written by Codex-5.2 (generative AI). Only the ideas, some small edits, and this README are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life/))! Credit is appreciated but not required, as per the CC0 licence.
