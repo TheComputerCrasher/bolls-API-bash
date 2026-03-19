@@ -62,7 +62,7 @@ Modifier flags:
 
   ```-i``` / ```--include-all``` - Include all JSON keys in -v and -c
 
-  ```-n``` / ```--no-comment``` - Remove commentary from -c
+  ```-o``` / ```--include-comments``` - Include commentary in -c
 
 Examples:
 ```
@@ -70,7 +70,7 @@ bolls --translations
 bolls -d
 bolls --books AMP
 bolls -r msg
-bolls --chapter -n Genesis 1
+bolls --chapter -o Genesis 1
 bolls -v -i '[{"translation":"niv","book":Luke,"chapter":2,"verses":[15,16,17]}]'
 bolls --verse niv luke 2 '15,16,17'
 bolls -p 'NKJV,NLT' John 1 '1,2,3,4,5'
