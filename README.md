@@ -42,9 +42,9 @@ Command flags:
 
   Search options:
 
-  ```-m``` / ```--match-case``` ```<true/false>``` - Makes search case-sensitive
+  ```-m``` / ```--match-case``` - Makes search case-sensitive
 
-  ```-w``` / ```--match-whole-word``` ```<true/false>``` - Only search complete matches (e.g. "Dan" instead of "Daniel")
+  ```-w``` / ```--match-whole``` - Only search complete matches (currently not working?)
 
   ```-B``` / ```--book ``` ```<book/ot/nt>``` - Search in a specific book, or in just the Old or New Testament
 
@@ -83,7 +83,5 @@ Examples:
 ```
 
 ## TODO
-* Change ```-m``` and ```-w``` to not need a second parameter because there's only 2 options (true/false)
-* ```--match-whole-word``` is reversed (true returns false and vice versa)
 * Figure out how this would work for anyone running bolls.life locally as per the [official docs](https://github.com/Bolls-Bible/bain/blob/master/docs/LOCAL_DEV_WITH_DOCKER_COMPOSER.md)
 * Maybe figure out how I want to share this with the internet, but this is kinda a niche project and anyone can freely edit if they find it so may not be worth it
