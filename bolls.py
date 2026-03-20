@@ -120,7 +120,7 @@ Command flags (choose one):
   -r / --random <translation>
   Get a random verse
 
-  -f / --define <dictionary> <Hebrew/Greek word>
+  -D / --define <dictionary> <Hebrew/Greek word>
   Get definitions for a Hebrew or Greek word
 
   -p / --parallel <translations> <book> <chapter> <verse(s)>
@@ -130,15 +130,15 @@ Command flags (choose one):
   Search verses by text
   Search options (choose any amount or none):
 
-    --match-case <true/false>
+    -m / --match-case <true/false>
 
-    --match-whole-word <true/false>
+    -w / --match-whole-word <true/false>
 
-    --book <book/ot/nt>
+    -B / --book <book/ot/nt>
 
-    --page <#>
+    -P / --page <#>
     
-    --page-limit <#>
+    -l / --page-limit <#>
 
 Notes:
   <book> can be a number or a name (case-insensitive).
@@ -153,7 +153,7 @@ Modifier flags (choose one or none):
   -a / --include-all
   Include all JSON keys ("pk:", "translation:", "book", etc.) in -v and -c
 
-  -o / --include-comments
+  -C / --include-comments
   Include commentary in -c
 
 
@@ -162,14 +162,14 @@ Examples:
   bolls -d
   bolls --books AMP
   bolls -r msg
-  bolls --chapter -o Genesis 1
+  bolls --chapter -C Genesis 1
   bolls -v -a '[{"translation":"niv","book":Luke,"chapter":2,"verses":[15,16,17]}]'
   bolls --verse niv luke 2 '15,16,17'
   bolls -p 'NKJV,NLT' John 1 '1,2,3,4,5'
   bolls --parallel '{"translations":["NKJV","NLT"],"book":62,"chapter"1,"verses":[1,2,3,4,5]}' -j
   bolls -s YLT haggi --match-case false --match-whole-word true --page-limit 128 --page 1
-  bolls --search kjv love --book genesis
-  bolls -f BDBT אֹ֑ור
+  bolls --search kjv love -B genesis
+  bolls -D BDBT אֹ֑ור
 
 """.strip()
     )
@@ -427,7 +427,7 @@ def main(argv: list[str]) -> int:
             raw_json = True
         elif a in ("-a", "--include-all"):
             include_all = True
-        elif a in ("-o", "--include-comments"):
+        elif a in ("-C", "--include-comments"):
             add_comments = True
         else:
             args.append(a)
@@ -439,11 +439,11 @@ def main(argv: list[str]) -> int:
         if cmd in ("-h", "--help"):
             _print_help()
             return 0
-        if cmd in ("-t", "--translations"):
+        if cmd in ("-t", "--translations", "--list-translations"):
             raw = _curl_get(f"{BASE_URL}/static/bolls/app/views/languages.json")
             _print_json(raw, raw_json)
             return 0
-        if cmd in ("-d", "--dictionaries"):
+        if cmd in ("-d", "--dictionaries", "--list-dictionaries"):
             raw = _curl_get(f"{BASE_URL}/static/bolls/app/views/dictionaries.json")
             _print_json(raw, raw_json)
             return 0
@@ -588,27 +588,27 @@ def main(argv: list[str]) -> int:
             i = 0
             while i < len(opts):
                 opt = opts[i]
-                if opt in ("--match_case", "--match-case"):
+                if opt in ("--match_case", "--match-case", "-m"):
                     if i + 1 >= len(opts):
                         raise ValueError("Missing value for --match-case")
                     match_case = opts[i + 1]
                     i += 2
-                elif opt in ("--match_whole", "--match-whole", "--match-whole-word"):
+                elif opt in ("--match_whole", "--match-whole", "--match-whole-word", "-w"):
                     if i + 1 >= len(opts):
                         raise ValueError("Missing value for --match-whole-word")
                     match_whole = opts[i + 1]
                     i += 2
-                elif opt == "--book":
+                elif opt in ("--book", "-B"):
                     if i + 1 >= len(opts):
                         raise ValueError("Missing value for --book")
                     book = opts[i + 1]
                     i += 2
-                elif opt == "--page":
+                elif opt in ("--page", "-P"):
                     if i + 1 >= len(opts):
                         raise ValueError("Missing value for --page")
                     page = opts[i + 1]
                     i += 2
-                elif opt in ("--limit", "--page-limit"):
+                elif opt in ("--limit", "--page-limit", "-l"):
                     if i + 1 >= len(opts):
                         raise ValueError("Missing value for --limit")
                     limit = opts[i + 1]
@@ -637,7 +637,7 @@ def main(argv: list[str]) -> int:
             _print_json(raw, raw_json)
             return 0
 
-        if cmd in ("-f", "--define"):
+        if cmd in ("-D", "--define"):
             if len(rest) < 2:
                 print("Usage: bolls --define <dictionary> <Hebrew/Greek word>", file=sys.stderr)
                 return 2
