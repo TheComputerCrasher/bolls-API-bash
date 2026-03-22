@@ -44,7 +44,7 @@ Search options (choose any amount or none):
 
 * ```-m``` / ```--match-case``` - Makes search case-sensitive
 
-* ```-w``` / ```--match-whole``` - Only search complete matches (currently not working?)
+* ```-w``` / ```--match-whole``` - Only search complete phrase matches (currently not working because it needs spaces)
 
 * ```-B``` / ```--book ``` ```<book/ot/nt>``` - Search in a specific book, or in just the Old or New Testament
 
