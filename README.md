@@ -85,4 +85,5 @@ bolls -D BDBT אֹ֑ור
 ## TODO
 * Figure out how this would work for anyone running bolls.life locally as per the [official docs](https://github.com/Bolls-Bible/bain/blob/master/docs/LOCAL_DEV_WITH_DOCKER_COMPOSER.md)
 * Maybe allow -v to get verses from multiple chapters at once
+* Maybe remove -c and just let -v automatically detect when you want a whole chapter
 * Maybe figure out how I want to share this with the internet, but this is kinda a niche project and anyone can freely edit if they find it so may not be worth it
