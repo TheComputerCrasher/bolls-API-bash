@@ -30,7 +30,9 @@ def indent($n): " " * ($n * 4);
 
 def strip_html:
   if type == "string" then
-    gsub("<(br|p) */?>"; "\n") | gsub("<[^>]*>"; "")
+    gsub("(?is)<s[^>]*>.*?</s>"; "")
+    | gsub("<(br|p) */?>"; "\n")
+    | gsub("<[^>]*>"; "")
   else . end;
 
 def scalar:
@@ -168,7 +170,7 @@ Examples:
   bolls --verses nlt,nkjv genesis 1
   bolls -v NIV Luke 2:15-17
   bolls --verses niv,nkjv genesis 1:1-3 -c
-  bolls -v nlt genesis 1:1-3 / esv luke 2 / kjv,nkjv deuteronomy 6:5
+  bolls -v nlt genesis 1:1-3 / esv luke 2 / ylt,nkjv deuteronomy 6:5
   bolls --verses niv genesis 1
   bolls -s ylt -m -w -l 3 -p 1 Jesus wept
   bolls --search YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
@@ -264,6 +266,21 @@ def _drop_translation_only_entries(value: object) -> object:
 
 
 
+
+
+def _strip_s_tags(text: str) -> str:
+    return re.sub(r"<s[^>]*>.*?</s>", "", text, flags=re.IGNORECASE | re.DOTALL)
+
+
+def _strip_s_tags_in_data(value: object) -> object:
+    if isinstance(value, str):
+        return _strip_s_tags(value)
+    if isinstance(value, list):
+        return [_strip_s_tags_in_data(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _strip_s_tags_in_data(v) for k, v in value.items()}
+    return value
+
 def _print_json(
     raw: str,
     raw_json: bool,
@@ -295,6 +312,7 @@ def _print_json(
     except Exception:
         sys.stdout.write(raw)
         return
+    data = _strip_s_tags_in_data(data)
     print(json.dumps(data, indent=2, ensure_ascii=False))
 
 
@@ -305,7 +323,12 @@ def _split_slash_groups(args: list[str]) -> list[list[str]]:
     groups = []
     current = []
     for token in args:
-        if "/" not in token:
+        if token == "/":
+            if current:
+                groups.append(current)
+                current = []
+            continue
+        if "/" not in token or token.startswith("/") or token.startswith("./") or token.startswith("../"):
             current.append(token)
             continue
         parts = token.split("/")
@@ -317,10 +340,10 @@ def _split_slash_groups(args: list[str]) -> list[list[str]]:
                 if current:
                     groups.append(current)
                     current = []
-        # if token ends with '/', current is already flushed
     if current:
         groups.append(current)
     return groups
+
 
 
 def _run_verses(rest: list[str], include_all: bool, add_comments: bool, raw_json: bool) -> int:
@@ -683,24 +706,6 @@ def _first_translation(translations_json: str) -> str:
     if not isinstance(data, list) or not data:
         raise ValueError("translations list is empty!")
     return data[0]
-
-
-def _normalize_parallel_json(arg: str) -> str:
-    if os.path.isfile(arg):
-        with open(arg, "r", encoding="utf-8") as f:
-            obj = json.load(f)
-    else:
-        obj = json.loads(arg)
-    if not isinstance(obj, dict):
-        raise ValueError("parallel JSON must be an object")
-    translations = obj.get("translations")
-    if not translations or not isinstance(translations, list):
-        raise ValueError("parallel JSON must include translations array")
-    translations = [t.upper() if isinstance(t, str) else t for t in translations]
-    obj["translations"] = translations
-    if "book" in obj:
-        obj["book"] = _book_to_id(translations[0], obj["book"])
-    return json.dumps(obj)
 
 
 def _validate_json(body: str) -> None:
