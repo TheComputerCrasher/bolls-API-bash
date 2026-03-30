@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import tempfile
+import time
 from io import BytesIO
 
 try:
@@ -22,6 +23,8 @@ except Exception:
 
 BASE_URL = "https://bolls.life"
 PARALLEL_CHAPTER_MAX_VERSE = 300
+OUTPUT_LINE_THRESHOLD = 1000
+OUTPUT_FILE_PREFIX = "bolls_output"
 _MAX_VERSE_CACHE: dict[tuple[str, int, int], int] = {}
 _LANGUAGE_MAP: dict[str, str] | None = None
 _LANGUAGE_TRANSLATIONS: dict[str, set[str]] | None = None
@@ -148,7 +151,8 @@ Command flags (choose one):
 Notes:
   <translation> must be the abbreviation, not the full name. Multiple translations are separated by commas.
   <book> can be a number or a name.
-  [verse(s)] and [chapter(s)] can be a single number, multiple numbers separated by commas (e.g. 1,5,9), or a range (e.g. 13-17). 
+  [verse(s)] and [chapter(s)] can be a single number, multiple numbers separated by commas (e.g. 1,5,9), or a range (e.g. 13-17).
+  Omit verses to get a full chapter, and omit chapters to get the full book.
   Use / to use multiple -v commands at once (see examples).
 
 
@@ -162,23 +166,28 @@ Modifier flags (choose one or none):
   -c / --include-comments
   Include commentary (currently not working)
 
+  -f / --file
+  Save output to a .txt or .json file to current working directory
+
+  -u / --url
+  Print the URL (and POST body) that would be called from the API
+
 
 Examples:
-  bolls --translations
   bolls -d
+  bolls -D BDBT אֹ֑ור
+  bolls --translations
   bolls --books AMP
-  bolls -r msg -j
   bolls --verses esv Genesis 1
-  bolls -v esv 1 1 -j
-  bolls --verses nlt,nkjv genesis 1
-  bolls -v NIV Luke 2:15-17
+  bolls -v esv 1 1
+  bolls --verses nlt,nkjv exodus 2:1,5,7 -a
+  bolls -v NIV Luke 2:15-17 -u
   bolls --verses niv,nkjv genesis 1:1-3 -c
   bolls -v nlt genesis 1:1-3 / esv luke 2 / ylt,nkjv deuteronomy 6:5
-  bolls --verses niv genesis 1
-  bolls -s ylt -m -w -l 3 -p 1 Jesus wept
-  bolls --search YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
-  bolls -D BDBT אֹ֑ור
-
+  bolls --verses niv genesis -f
+  bolls -r msg -j
+  bolls --search ylt -m -w -l 3 -p 1 Jesus wept
+  bolls -s YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
 """.strip()
     )
 
@@ -280,12 +289,12 @@ def _strip_s_tags_in_data(value: object) -> object:
         return {k: _strip_s_tags_in_data(v) for k, v in value.items()}
     return value
 
-def _print_json(
+def _format_json(
     raw: str,
     raw_json: bool,
     jq_prefix: str | None = None,
     drop_translation_only: bool = False,
-) -> None:
+) -> str:
     if drop_translation_only:
         try:
             data = json.loads(raw)
@@ -295,25 +304,74 @@ def _print_json(
             data = _drop_translation_only_entries(data)
             raw = json.dumps(data, ensure_ascii=False)
     if raw_json:
-        sys.stdout.write(raw)
-        return
+        return raw
     if jqmod is not None:
         try:
             rendered = _jq_pretty(raw, jq_prefix)
             if rendered and not rendered.endswith("\n"):
                 rendered += "\n"
-            sys.stdout.write(rendered)
-            return
+            return rendered
         except Exception:
             pass
     try:
         data = json.loads(raw)
     except Exception:
-        sys.stdout.write(raw)
-        return
+        return raw
     data = _strip_s_tags_in_data(data)
-    print(json.dumps(data, indent=2, ensure_ascii=False))
+    return json.dumps(data, indent=2, ensure_ascii=False) + "\n"
 
+
+def _print_json(
+    raw: str,
+    raw_json: bool,
+    jq_prefix: str | None = None,
+    drop_translation_only: bool = False,
+) -> None:
+    sys.stdout.write(_format_json(raw, raw_json, jq_prefix, drop_translation_only))
+
+
+def _line_count(text: str) -> int:
+    if not text:
+        return 0
+    return len(text.splitlines())
+
+
+def _next_output_path(ext: str) -> str:
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    base = f"{OUTPUT_FILE_PREFIX}_{ts}"
+    directory = os.getcwd()
+    path = os.path.join(directory, f"{base}.{ext}")
+    if not os.path.exists(path):
+        return path
+    for i in range(1, 1000):
+        alt = os.path.join(directory, f"{base}_{i}.{ext}")
+        if not os.path.exists(alt):
+            return alt
+    return os.path.join(directory, f"{base}_{int(time.time())}.{ext}")
+
+
+def _save_output(text: str, raw_json: bool) -> str:
+    ext = "json" if raw_json else "txt"
+    path = _next_output_path(ext)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+    return path
+
+
+def _write_output(text: str, raw_json: bool, force_file: bool) -> None:
+    sys.stdout.write(text)
+    line_count = _line_count(text)
+    if force_file or line_count > OUTPUT_LINE_THRESHOLD:
+        path = _save_output(text, raw_json)
+        print(f"Saved output to {path}", file=sys.stderr)
+
+
+def _format_url(method: str, url: str, body: str | None = None) -> str:
+    method_up = method.upper()
+    if method_up == "POST" and body is not None:
+        body_out = body.rstrip("\n")
+        return f"{method_up} {url}\n{body_out}\n"
+    return f"{method_up} {url}\n"
 
 def _split_slash_groups(args: list[str]) -> list[list[str]]:
     groups = []
@@ -341,27 +399,24 @@ def _split_slash_groups(args: list[str]) -> list[list[str]]:
     return groups
 
 
-def _run_verses(rest: list[str], include_all: bool, add_comments: bool, raw_json: bool) -> int:
+def _run_verses(rest: list[str], include_all: bool, add_comments: bool, raw_json: bool, url_only: bool = False) -> str:
     if not rest:
-        print(
-            "Usage: bolls --verses <translation(s)> <book> <chapter>[:<verse(s)>]",
-            file=sys.stderr,
+        raise ValueError(
+            "Usage: bolls --verses <translation(s)> <book> <chapter>[:<verse(s)>]"
         )
-        return 2
     jq_prefix = _choose_jq_prefix(include_all, add_comments)
     if len(rest) == 1:
         body = _normalize_get_verses_json(rest[0])
+        if url_only:
+            return _format_url("POST", f"{BASE_URL}/get-verses/", body)
         raw = _curl_post(f"{BASE_URL}/get-verses/", body)
-        _print_json(raw, raw_json, jq_prefix, drop_translation_only=(include_all or raw_json))
-        return 0
+        return _format_json(raw, raw_json, jq_prefix, drop_translation_only=(include_all or raw_json))
     translations_list = _parse_translations_arg(rest[0])
     ref_args = rest[1:]
     if not ref_args:
-        print(
-            "Usage: bolls --verses <translation(s)> <book> <chapter>[:<verse(s)>]",
-            file=sys.stderr,
+        raise ValueError(
+            "Usage: bolls --verses <translation(s)> <book> <chapter>[:<verse(s)>]"
         )
-        return 2
     mode, book, chapters, verses_list = _parse_v_reference(ref_args)
     body_obj_list = []
     for translation in translations_list:
@@ -389,9 +444,10 @@ def _run_verses(rest: list[str], include_all: bool, add_comments: bool, raw_json
                 }
             )
     body = json.dumps(body_obj_list)
+    if url_only:
+        return _format_url("POST", f"{BASE_URL}/get-verses/", body)
     raw = _curl_post(f"{BASE_URL}/get-verses/", body)
-    _print_json(raw, raw_json, jq_prefix, drop_translation_only=(include_all or raw_json))
-    return 0
+    return _format_json(raw, raw_json, jq_prefix, drop_translation_only=(include_all or raw_json))
 
 def _norm_translation(s: str) -> str:
     return s.upper()
@@ -998,6 +1054,8 @@ def main(argv: list[str]) -> int:
     raw_json = False
     include_all = False
     add_comments = False
+    file_output = False
+    url_only = False
 
     args = []
     for a in argv:
@@ -1007,6 +1065,10 @@ def main(argv: list[str]) -> int:
             include_all = True
         elif a in ("-c", "--include-comments"):
             add_comments = True
+        elif a in ("-f", "--file"):
+            file_output = True
+        elif a in ("-u", "--url"):
+            url_only = True
         else:
             args.append(a)
 
@@ -1018,33 +1080,51 @@ def main(argv: list[str]) -> int:
             _print_help()
             return 0
         if cmd in ("-t", "--translations"):
-            raw = _curl_get(f"{BASE_URL}/static/bolls/app/views/languages.json")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/static/bolls/app/views/languages.json"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
         if cmd in ("-d", "--dictionaries"):
-            raw = _curl_get(f"{BASE_URL}/static/bolls/app/views/dictionaries.json")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/static/bolls/app/views/dictionaries.json"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
         if cmd in ("-b", "--books"):
             if not rest:
                 print("Usage: bolls --books <translation>", file=sys.stderr)
                 return 2
             translation = _norm_translation(rest[0])
-            raw = _curl_get(f"{BASE_URL}/get-books/{translation}/")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/get-books/{translation}/"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
 
         if cmd in ("-v", "--verses"):
             groups = [g for g in _split_slash_groups(rest) if g]
+            output_raw_json = raw_json if not url_only else False
             if len(groups) <= 1:
-                return _run_verses(rest, include_all, add_comments, raw_json)
-            for idx, group in enumerate(groups):
-                rc = _run_verses(group, include_all, add_comments, raw_json)
-                if rc != 0:
-                    return rc
-                if idx < len(groups) - 1:
-                    sys.stdout.write("\n\n")
+                output = _run_verses(rest, include_all, add_comments, raw_json, url_only)
+                _write_output(output, output_raw_json, file_output)
+                return 0
+            outputs = []
+            for group in groups:
+                outputs.append(_run_verses(group, include_all, add_comments, raw_json, url_only))
+            cleaned = [out.rstrip("\n") for out in outputs]
+            combined = "\n\n".join(cleaned)
+            if outputs and outputs[-1].endswith("\n"):
+                combined += "\n"
+            _write_output(combined, output_raw_json, file_output)
             return 0
+
         if cmd in ("-s", "--search"):
 
             if len(rest) < 2:
@@ -1121,8 +1201,12 @@ def main(argv: list[str]) -> int:
                 query += f"&page={_urlencode(page)}"
             if limit is not None:
                 query += f"&limit={_urlencode(limit)}"
-            raw = _curl_get(f"{BASE_URL}/v2/find/{translation}?{query}")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/v2/find/{translation}?{query}"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
 
         if cmd in ("-D", "--define"):
@@ -1135,8 +1219,12 @@ def main(argv: list[str]) -> int:
                 print("Usage: bolls --define <dictionary> <Hebrew/Greek word>", file=sys.stderr)
                 return 2
             query_enc = _urlencode(query)
-            raw = _curl_get(f"{BASE_URL}/dictionary-definition/{dict_code}/{query_enc}/")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/dictionary-definition/{dict_code}/{query_enc}/"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
 
         if cmd in ("-r", "--random"):
@@ -1144,8 +1232,12 @@ def main(argv: list[str]) -> int:
                 print("Usage: bolls --random <translation>", file=sys.stderr)
                 return 2
             translation = _norm_translation(rest[0])
-            raw = _curl_get(f"{BASE_URL}/get-random-verse/{translation}/")
-            _print_json(raw, raw_json)
+            url = f"{BASE_URL}/get-random-verse/{translation}/"
+            if url_only:
+                _write_output(_format_url("GET", url), False, file_output)
+                return 0
+            raw = _curl_get(url)
+            _write_output(_format_json(raw, raw_json), raw_json, file_output)
             return 0
 
         if cmd.startswith("-"):
