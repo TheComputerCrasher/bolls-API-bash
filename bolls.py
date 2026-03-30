@@ -122,7 +122,7 @@ Command flags (choose one):
   -b / --books <translation>
   List all books of a chosen translation
 
-  -v / --verses <translation(s)> <book> [chapter[:verse(s)]]
+  -v / --verses <translation(s)> <book> [chapter(s) [:verse(s)] ]
   Get text from the Bible
 
   -r / --random <translation>
@@ -152,7 +152,7 @@ Notes:
   <translation> must be the abbreviation, not the full name. Multiple translations are separated by commas.
   <book> can be a number or a name.
   [verse(s)] and [chapter(s)] can be a single number, multiple numbers separated by commas (e.g. 1,5,9), or a range (e.g. 13-17).
-  Omit verses to get a full chapter, and omit chapters to get the full book.
+  When using -v, omit verses to get a full chapter, and omit chapters to get the full book.
   Use / to use multiple -v commands at once (see examples).
 
 
@@ -167,10 +167,10 @@ Modifier flags (choose one or none):
   Include commentary (currently not working)
 
   -f / --file
-  Save output to a .txt or .json file to current working directory
+  Save output to a .txt or .json file in current working directory
 
   -u / --url
-  Print the URL (and POST body) that would be called from the API
+  Print the URL (and POST body) that would have been called from the API
 
 
 Examples:
