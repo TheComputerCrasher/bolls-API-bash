@@ -94,6 +94,7 @@ bolls -s YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
 * Use official [soft links](https://bolls.life/api/#Soft%20links) instead of my own implementation of it ([they](https://github.com/Bohooslav) totally stole my idea frfr)
 * Figure out how to get commentary for multiple verses/chapters with minimal API calls
 * Ensure double line breaks between chapters
+* Figure out if /get-book works with pycurl
 * When getting full chapters, maybe use /get-text and /get-chapter instead of /get-verses
 * Maybe allow getting full translations with /static/translations/<translation>.json (don't output to the terminal, just save as a file)
 * Maybe figure out how I want to share this with the internet, but this is kinda a niche project and anyone can freely edit if they find it so may not be worth it
