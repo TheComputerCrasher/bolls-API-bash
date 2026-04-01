@@ -92,7 +92,7 @@ bolls -s YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
 
 ## TODO
 * Most of all, try to reduce server load
-* Use official [soft links](https://bolls.life/api/#Soft%20links) instead of my own implementation of it ([they](https://github.com/Bohooslav) totally stole my idea frfr)
+* Use official [soft links](https://github.com/Bolls-Bible/bain/blob/master/docs/API.md#soft-links) instead of my own implementation of it ([they](https://github.com/Bohooslav) totally stole my idea frfr)
 * Ensure double line breaks between chapters
 * Figure out if /get-book works with pycurl
 * When getting full chapters, use /get-text and /get-chapter instead of /get-verses
