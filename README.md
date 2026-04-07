@@ -91,10 +91,8 @@ bolls -s YLT --match-case --match-whole --page-limit 3 --page 1 Jesus wept
 ```
 
 ## TODO
-* Most of all, try to reduce server load
+* Most of all, try to reduce server load, which I think /get-verses does (please correct me if I'm wrong!)
 * Use official [soft links](https://github.com/Bolls-Bible/bain/blob/master/docs/API.md#soft-links) instead of my own implementation of it ([they](https://github.com/Bohooslav) totally stole my idea frfr)
 * Ensure double line breaks between chapters
 * Figure out if /get-book works with pycurl
-* When getting full chapters, use /get-text and /get-chapter instead of /get-verses
-* Maybe get [full translations](https://github.com/Bolls-Bible/bain/blob/master/docs/API.md#get-a-full-translation) and cache them locally if getting more than one chapter at a time
 * Maybe figure out how I want to share this with the internet, but this is kinda a niche project and anyone can freely edit if they find it so may not be worth it
