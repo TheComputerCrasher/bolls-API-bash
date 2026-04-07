@@ -22,29 +22,42 @@ Command flags (choose one):
 
 ```-h``` / ```--help```
 * Show this help page
+
 ```-d``` / ```--list-dictionaries```
 * List all available Hebrew/Greek dictionaries
+
 ```-D``` / ```--define``` ```<dictionary> <Hebrew/Greek word>```
 * Get definitions for a Hebrew or Greek word
+
 ```-t``` / ```--list-translations```
 * List all available Bible translations
+
 ```-b``` / ```--books``` ```<translation>```
 * List all books of a chosen translation
+
 ```-v``` / ```--verse``` ```<translation(s)> <book> [chapter(s) [:verse(s)] ]```
 * Get text from the Bible
+
 ```-r``` / ```--random``` ```<translation>```
 * Get a single random verse
+
 ```-s``` / ```--search <translation> <search term> [options]```
 * Search text in verses
+
 Search options (choose any amount or none when using -s):
+
 ```-m``` / ```--match-case``` 
 * Make search case-sensitive
+
 ```-w``` / ```--match-whole```
 * Only search complete phrase matches (requires multiple words)
+
 ```-B``` / ```--book``` ```<book/ot/nt>``` 
 * Search in a specific book, or in just the Old or New Testament
+
 ```-p``` / ```--page``` ```<#>``` -
 * Go to a specific page of the search results
+
 ```-l``` / ```--page-limit``` ```<#>```
 * Limits the number of pages of search results
 
@@ -56,45 +69,55 @@ Notes:
 * In -v, omit verses to get a full chapter, and omit chapters to get the full book.
 
 Modifier flags (choose one or none):
+
 ```-j``` / ```--raw-json```
 * Disable formatting
+
 ```-i``` / ```--include-all```
 * Include everything (verse id, translation, book number, etc.) in -v
+
 ```-C``` / ```--include-comments```
 * Include commentary (currently not working)
+
 ```-f``` / ```--file```
 * Save output to a .txt or .json file in current working directory
+
 ```-u``` ```--url```
 * Print the URL (and POST body) that would have been called from the API
 
 Examples:
+
 ```bolls -d```
 * Lists all the available dictionaries.
+
 ```bolls -D BDBT אֹ֑ור```
 * Translates אֹ֑ור to English using Brown-Driver-Briggs' Hebrew Definitions / Thayer's Greek Definitions.
+
 ```bolls --translations```
 * Lists all the available Bible translations.
+
 ```bolls --books AMP```
 * Gets the list of books from the Amplified translation.
-```
-bolls --verses ESV genesis 1
-bolls -v esv 1 1
-```
+
+```bolls --verses ESV genesis 1``` and ```bolls -v esv 1 1```
 * Shows the text of Genesis 1 from the English Standard Version.
+
 ```bolls --verses nlt,nkjv exodus 2:1,5,7 -a```
 * Shows Exodus 2:1, 2:5, and 2:7 from both the New Living Translation and the New King James Version, with all the descriptive information.
+
 ```bolls -v niv jon 1:1-3 / esv luk 2 / ylt,nkjv deu 6:5```
 * Shows John 1:1-3 from the New International Version, Luke 2 from the English Standard Version, and Deuteronomy 6:5 from Young's Literal Translation and the New King James Version.
+
 ```bolls --verses niv 1 Corinthians -f```
 * Shows the entirety of 1 Corinthians from the New international Version and saves it to a file.
+
 ```bolls -r MSG -j```
 * Shows a random verse from the Message translation.
+
 ```bolls --random nlt -u```
 * Shows the URL that the script would have used to get a random verse from the New Living Translation.
-```
-bolls -s ylt -m -w -l 3 Jesus wept
-bolls --search YLT --match-case --match-whole --page-limit 3 Jesus wept
-```
+
+```bolls -s ylt -m -w -l 3 Jesus wept``` and ```bolls --search YLT --match-case --match-whole --page-limit 3 Jesus wept```
 * Searches Young's Literal Translation for "Jesus wept", case-sensitive and matching the entire phrase, with a limit of 3 pages.
 
 
