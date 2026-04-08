@@ -135,7 +135,7 @@ Command flags (choose one):
   Search text in verses
 
   Search options (choose any amount or none when using -s):
-    -m / --match-case
+    -c / --match-case
     Make search case-sensitive
 
     -w / --match-whole
@@ -145,18 +145,22 @@ Command flags (choose one):
     Search in a specific book, or in just the Old or New Testament
 
     -p / --page <#>
-    Go to a specific page of the search results
-    
+    Go to a specific page of search results (each page has up to 128 results by default)
+
     -l / --page-limit <#>
-    Limits the number of pages of search results
+    Limits the number of search results displayed per page
 
 
 Notes:
   <translation> must be the abbreviation, not the full name. Multiple translations are separated by commas.
+
   <book> can be a number, full name, or short name (e.g. "1th" instead of "1 Thessalonians").
+
   [verse(s)] and [chapter(s)] can be a single number, multiple numbers separated by commas (e.g. 1,5,9), or a range (e.g. 13-17).
+
   When using -v, omit verses to get a full chapter, and omit chapters to get the full book.
-  Use / to use multiple -v commands at once (see examples).
+
+  Use slashes to use multiple -v commands at once (see examples).
 
 
 Modifier flags (choose one or none):
@@ -166,7 +170,7 @@ Modifier flags (choose one or none):
   -a / --include-all
   Include everything (verse id, translation, book number, etc.) in -v
 
-  -c / --include-comments
+  -C / --include-comments
   Include commentary (currently not working)
 
   -f / --file
@@ -186,8 +190,8 @@ Examples:
   bolls --translations
   Lists all the available Bible translations.
 
-  bolls --books AMP
-  Gets the list of books from the Amplified translation.
+  bolls -b AMP
+  Lists the books in the Amplified translation.
 
   bolls --verses ESV genesis 1
   bolls -v esv 1 1
@@ -206,11 +210,11 @@ Examples:
   Shows a random verse from the Message translation.
 
   bolls --random nlt -u
-  Shows the URL that the script would have used to get a random verse from the New Living Translation.
+  Shows the URL that would have been used to get a random verse from the New Living Translation.
 
-  bolls -s ylt -m -w -l 3 Jesus wept
-  bolls --search YLT --match-case --match-whole --page-limit 3 Jesus wept
-  Searches Young's Literal Translation for "Jesus wept", case-sensitive and matching the entire phrase, with a limit of 3 pages.
+  bolls -s ylt -c -w -l 3 Jesus said
+  bolls --search YLT --match-case --match-whole --page-limit 3 Jesus said
+  Searches Young's Literal Translation for "Jesus said", case-sensitive and matching the entire phrase, with a limit of 3 results.
 """.strip()
     )
 
@@ -1225,7 +1229,7 @@ def main(argv: list[str]) -> int:
             raw_json = True
         elif a in ("-a", "--include-all"):
             include_all = True
-        elif a in ("-c", "--include-comments"):
+        elif a in ("-C", "--include-comments"):
             add_comments = True
         elif a in ("-f", "--file"):
             file_output = True
@@ -1311,7 +1315,7 @@ def main(argv: list[str]) -> int:
                     search_parts = opts[i + 1 :]
                     break
                 if opt.startswith("-"):
-                    if opt in ("--match_case", "--match-case", "-m"):
+                    if opt in ("--match_case", "--match-case", "-c"):
                         match_case = True
                         i += 1
                         continue
