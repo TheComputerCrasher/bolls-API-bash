@@ -13,7 +13,7 @@ Download [bolls.py](bolls.py), put it wherever you'd like, and run ```python3 /p
 If you want to package this script for your own OS or PyPI or whatever, that's great, but I will not be doing so. Besides, this is a CLI-only program and pretty much everything supports Python fairly easily, so I recommend the installation method above unless you want to share your packaged version with the rest of the internet. 
 
 ## License
-I (TheComputerCrasher) put this under the Unilicense (public domain license) since the code was written by Codex-5.2 (generative AI). Only the ideas, some small edits, and this README are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life/))! Credit is appreciated but not required, as per the Unilicense. 
+I (TheComputerCrasher) put this under the Unilicense (public domain license) since the code was written by ChatGPT Codex (generative AI). Only the ideas, some small edits, and this README are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life/))! Credit is appreciated but not required, as per the Unilicense. 
 
 ## Usage
 (taken from ```bolls --help```)
