@@ -1,5 +1,5 @@
 # Bolls API command-line client
-A utility for easily accessing the [bolls.life API]([https://bolls.life/api/](https://github.com/Bolls-Bible/bain/blob/master/docs/API.md)) to get specific portions of the Bible from a CLI. Human-readable text is the default, but can be changed to raw JSON for scripting or whatever with the ```-j``` / ```--raw-json``` flag (see [Usage](README.md#Usage) section below). 
+A utility for easily accessing the [bolls.life API](https://github.com/Bolls-Bible/bain/blob/master/docs/API.md) to get specific portions of the Bible from a CLI. Human-readable text is the default, but can be changed to raw JSON for scripting or whatever with the ```-j``` / ```--raw-json``` flag (see [Usage](README.md#Usage) section below). 
 
 This script has only been tested on English translations, but it should be general enough that it works with other languages as well.
 
@@ -13,7 +13,7 @@ Download [bolls.py](bolls.py), put it wherever you'd like, and run ```python3 /p
 If you want to package this script for your own OS or PyPI or whatever, that's great, but I will not be doing so. Besides, this is a CLI-only program and pretty much everything supports Python fairly easily, so I recommend the installation method above unless you want to share your packaged version with the rest of the internet. 
 
 ## License
-I (TheComputerCrasher) put this under the Unilicense (public domain license) since the code was written by ChatGPT Codex (generative AI). Only the ideas, some small edits, and this README are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life/))! Credit is appreciated but not required, as per the Unilicense. 
+I (TheComputerCrasher) put this under the Unlicense (public domain license) since the code was written by ChatGPT Codex (generative AI). Only the ideas, some small edits, and this README are truly mine. Feel free to use this in your own projects if you would like (especially the people at [bolls.life](https://bolls.life/))! Credit is appreciated but not required, as per the Unlicense. 
 
 ## Usage
 (taken from ```bolls --help```)
